@@ -34,6 +34,7 @@ input SaveInput {
 
 type Query {
     me: User
+    users: [User]
 }
 
 type Mutation {
@@ -43,3 +44,4 @@ type Mutation {
     removeBook(bookId: ID!): User
 }
 `
+module.exports = typeDefs;
