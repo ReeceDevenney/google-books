@@ -29,7 +29,6 @@ input SaveInput {
     title: String,
     bookId: ID!
     image: String,
-    link: String
 }
 
 type Query {
