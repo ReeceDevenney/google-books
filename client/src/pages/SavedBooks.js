@@ -7,10 +7,32 @@ import { removeBookId } from '../utils/localStorage';
 import {useQuery, useMutation} from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
+
+
 const SavedBooks = () => {
-  const [removeBook] = useMutation(REMOVE_BOOK)
+  
   const { loading, data } = useQuery(GET_ME)
   const userData = data?.me || {}
+
+
+  const [removeBook] = useMutation(REMOVE_BOOK,{
+    update(cache, { data:  {removeBook}  }) {
+      
+      // could potentially not exist yet, so wrap in a try/catch
+    try {
+      // update me array's cache
+      const { me } = cache.readQuery({ query: GET_ME });
+      console.log(removeBook)
+      cache.writeQuery({
+        query: GET_ME,
+        data: { me: { ...me, savedBooks: removeBook.savedBooks } },
+      });
+    } catch (e) {
+      console.warn("First book saved by user!")
+    };
+  }
+  })
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -29,7 +51,6 @@ const SavedBooks = () => {
       })
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
-      console.log(bookId)
     } catch (err) {
       console.error(err);
     }

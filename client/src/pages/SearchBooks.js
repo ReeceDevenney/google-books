@@ -6,9 +6,9 @@ import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
 
 const SearchBooks = () => {
-  const[saveBook] = useMutation(SAVE_BOOK)
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
@@ -22,7 +22,23 @@ const SearchBooks = () => {
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
-
+  const[saveBook] = useMutation(SAVE_BOOK, {
+    update(cache, { data:  {saveBook}  }) {
+      
+      // could potentially not exist yet, so wrap in a try/catch
+    try {
+      // update me array's cache
+      const { me } = cache.readQuery({ query: GET_ME });
+      console.log(saveBook)
+      cache.writeQuery({
+        query: GET_ME,
+        data: { me: { ...me, savedBooks: saveBook.savedBooks } },
+      });
+    } catch (e) {
+      console.warn("First book saved by user!")
+    };
+  }
+  })
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
