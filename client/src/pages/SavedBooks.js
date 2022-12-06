@@ -21,7 +21,6 @@ const SavedBooks = () => {
     try {
       // update me array's cache
       const { me } = cache.readQuery({ query: GET_ME });
-      console.log(removeBook)
       cache.writeQuery({
         query: GET_ME,
         data: { me: { ...me, savedBooks: removeBook.savedBooks } },

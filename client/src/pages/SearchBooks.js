@@ -29,7 +29,6 @@ const SearchBooks = () => {
     try {
       // update me array's cache
       const { me } = cache.readQuery({ query: GET_ME });
-      console.log(saveBook)
       cache.writeQuery({
         query: GET_ME,
         data: { me: { ...me, savedBooks: saveBook.savedBooks } },
