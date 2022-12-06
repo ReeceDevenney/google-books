@@ -18,7 +18,6 @@ app.use(express.json());
 
 const startApolloServer = async (typeDefs, resolvers) => {
   await server.start();
-  // integrate our Apollo server with the Express application as middleware
   server.applyMiddleware({ app });
 }
 
